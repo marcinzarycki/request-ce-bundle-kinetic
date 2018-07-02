@@ -42,11 +42,12 @@
       }
     }
   }
-
-  @media (min-width: 768px) {
-    .d-md-table-header-group {
-      display: table-header-group !important;
-    }
+  div[data-label-hidden] label:first-child {
+    display: none;
+  }
+  div.checkbox[data-recurrence-checkbox] label:not(:first-child),
+  div.radio[data-recurrence-radio] label:not(:first-child) {
+    min-width: 100px;
   }
 }
 .page-panel--robots-sidebar {
