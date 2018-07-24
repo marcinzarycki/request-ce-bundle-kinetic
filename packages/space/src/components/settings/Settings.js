@@ -7,11 +7,13 @@ import { Icon } from 'common';
 
 import { SpaceSettings } from './spaceSettings/SpaceSettings';
 import { Notifications } from './notifications/Notifications';
+import { Console } from './consoles/Console';
 import { Datastore } from './datastore/Datastore';
 import { Robots } from './robots/Robots';
 import { Users } from './users/Users';
 import { Profile } from './profile/Profile';
 import { actions as datastoreActions } from '../../redux/modules/settingsDatastore';
+import { actions as consolesActions } from '../../redux/modules/settingsConsoles';
 
 export const SettingsComponent = () => (
   <Switch>
@@ -21,12 +23,14 @@ export const SettingsComponent = () => (
     <Route path="/settings/robots" component={Robots} />
     <Route path="/settings/users" component={Users} />
     <Route path="/settings/notifications" component={Notifications} />
+    <Route path="/settings/:console" component={Console} />
     <Route component={SettingsNavigation} />
   </Switch>
 );
 
 const mapDispatchToProps = {
   fetchForms: datastoreActions.fetchForms,
+  fetchConsoles: consolesActions.fetchConsoles,
 };
 
 export const Settings = compose(
@@ -37,6 +41,7 @@ export const Settings = compose(
   lifecycle({
     componentWillMount(prev, next) {
       this.props.fetchForms();
+      this.props.fetchConsoles();
     },
   }),
 )(SettingsComponent);
@@ -51,7 +56,7 @@ const SettingsCard = ({ path, icon, name, description }) => (
   </Link>
 );
 
-const SettingsNavigationComponent = ({ isSpaceAdmin }) => (
+const SettingsNavigationComponent = ({ isSpaceAdmin, consoles }) => (
   <div className="page-container page-container--space-settings">
     <div className="page-panel page-panel--datastore-content">
       <div className="page-title">
@@ -106,6 +111,17 @@ const SettingsNavigationComponent = ({ isSpaceAdmin }) => (
             />
           </Fragment>
         )}
+        {consoles.map(console => {
+          return console.attributes['Parent Console Slug'] ? null : (
+            <SettingsCard
+              name={console.name}
+              key={console.slug}
+              path={`/settings/${console.slug}`}
+              icon={console.attributes['Icon']}
+              description={console.description}
+            />
+          );
+        })}
       </div>
     </div>
   </div>
@@ -113,6 +129,7 @@ const SettingsNavigationComponent = ({ isSpaceAdmin }) => (
 
 const mapStateToProps = state => ({
   isSpaceAdmin: state.app.profile.spaceAdmin,
+  consoles: state.space.settingsConsoles.consoles,
 });
 
 export const SettingsNavigation = compose(

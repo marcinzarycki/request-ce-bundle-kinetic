@@ -12,6 +12,8 @@ export const SidebarComponent = ({
   settingsBackPath,
   hasSharedTaskEngine,
   loading,
+  loadingConsoles,
+  consoles,
   spaceAdmin,
   showDatastore,
   showNotifications,
@@ -22,70 +24,84 @@ export const SidebarComponent = ({
       <span className="fa fa-fw fa-chevron-left" />
       Return to Home
     </Link>
-    {!loading && (
-      <ul className="nav flex-column settings-group">
-        <li className="nav-item">
-          <NavLink
-            to="/settings/profile"
-            className="nav-link"
-            activeClassName="active"
-          >
-            Profile
-            <span className="fa fa-fw fa-angle-right" />
-          </NavLink>
-          {spaceAdmin && (
+    {!loading &&
+      !loadingConsoles && (
+        <ul className="nav flex-column settings-group">
+          <li className="nav-item">
             <NavLink
-              to="/settings/space"
+              to="/settings/profile"
               className="nav-link"
               activeClassName="active"
             >
-              General
+              Profile
               <span className="fa fa-fw fa-angle-right" />
             </NavLink>
-          )}
-          {showDatastore && (
-            <NavLink
-              to="/settings/datastore"
-              className="nav-link"
-              activeClassName="active"
-            >
-              Datastore
-              <span className="fa fa-fw fa-angle-right" />
-            </NavLink>
-          )}
-          {showNotifications && (
-            <NavLink
-              to="/settings/notifications"
-              className="nav-link"
-              activeClassName="active"
-            >
-              Notifications
-              <span className="fa fa-fw fa-angle-right" />
-            </NavLink>
-          )}
-          {showRobots && (
-            <NavLink
-              to="/settings/robots"
-              className="nav-link"
-              activeClassName="active"
-            >
-              Robots
-              <span className="fa fa-fw fa-angle-right" />
-            </NavLink>
-          )}
-          {spaceAdmin && (
-            <NavLink
-              to="/settings/users"
-              className="nav-link"
-              activeClassName="active"
-            >
-              Users
-              <span className="fa fa-fw fa-angle-right" />
-            </NavLink>
-          )}
-        </li>
-      </ul>
-    )}
+            {spaceAdmin && (
+              <NavLink
+                to="/settings/space"
+                className="nav-link"
+                activeClassName="active"
+              >
+                General
+                <span className="fa fa-fw fa-angle-right" />
+              </NavLink>
+            )}
+            {showDatastore && (
+              <NavLink
+                to="/settings/datastore"
+                className="nav-link"
+                activeClassName="active"
+              >
+                Datastore
+                <span className="fa fa-fw fa-angle-right" />
+              </NavLink>
+            )}
+            {showNotifications && (
+              <NavLink
+                to="/settings/notifications"
+                className="nav-link"
+                activeClassName="active"
+              >
+                Notifications
+                <span className="fa fa-fw fa-angle-right" />
+              </NavLink>
+            )}
+            {showRobots && (
+              <NavLink
+                to="/settings/robots"
+                className="nav-link"
+                activeClassName="active"
+              >
+                Robots
+                <span className="fa fa-fw fa-angle-right" />
+              </NavLink>
+            )}
+            {spaceAdmin && (
+              <NavLink
+                to="/settings/users"
+                className="nav-link"
+                activeClassName="active"
+              >
+                Users
+                <span className="fa fa-fw fa-angle-right" />
+              </NavLink>
+            )}
+            {consoles.map(console => {
+              return console.attributes['Parent Console Slug'] ? null : (
+                <NavLink
+                  key={console.slug}
+                  to={`/settings/${console.slug}`}
+                  className="nav-link"
+                  activeClassName="active"
+                >
+                  {console.name}
+                  <span className="fa fa-fw fa-angle-right" />
+                </NavLink>
+              );
+            })}
+          </li>
+        </ul>
+      )}
     {spaceAdmin && (
       <div className="sidebar-group sidebar-group--settings">
         <ul className="nav flex-column settings-group">
@@ -120,6 +136,8 @@ export const SidebarComponent = ({
 export const mapStateToProps = state => ({
   loading: state.space.settingsDatastore.loading,
   forms: state.space.settingsDatastore.forms,
+  loadingConsoles: state.space.settingsConsoles.loading,
+  consoles: state.space.settingsConsoles.consoles,
   spaceAdmin: state.app.profile.spaceAdmin,
   pathname: state.router.location.pathname,
   hasSharedTaskEngine: selectHasSharedTaskEngine(state),

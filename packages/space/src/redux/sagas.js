@@ -1,5 +1,6 @@
 import { all } from 'redux-saga/effects';
 import { watchAbout } from './sagas/about';
+import { watchSettingsConsoles } from './sagas/settingsConsoles';
 import { watchSettingsDatastore } from './sagas/settingsDatastore';
 import { watchProfiles } from './sagas/profiles';
 import { watchTeams } from './sagas/team';
@@ -14,6 +15,7 @@ export default function* sagas() {
   yield all([
     watchSpaceApp(),
     watchAbout(),
+    watchSettingsConsoles(),
     watchSettingsDatastore(),
     watchSettingsNotifications(),
     watchSettingsRobots(),
