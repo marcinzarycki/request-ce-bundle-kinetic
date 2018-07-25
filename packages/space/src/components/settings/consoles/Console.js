@@ -14,34 +14,19 @@ export const ConsoleComponent = ({ match, loading, consoles }) => {
     const console = consoles.find(c => c.slug === match.params.console);
     if (console) {
       let breadcrumbs = List();
+      let currentCrumb = console;
       const findBySlug = slug => o => slug === o.slug;
-      if (Utils.getAttributeValue(console, 'Parent Console Slug')) {
-        const parent = consoles.find(
-          findBySlug(Utils.getAttributeValue(console, 'Parent Console Slug')),
+      while (currentCrumb) {
+        breadcrumbs = breadcrumbs.unshift(currentCrumb);
+        const parentSlug = Utils.getAttributeValue(
+          currentCrumb,
+          'Parent Console Slug',
         );
-        if (parent) {
-          breadcrumbs = breadcrumbs.unshift(parent);
-        }
-      }
-      while (
-        breadcrumbs.first() &&
-        Utils.getAttributeValue(breadcrumbs.first(), 'Parent Console Slug') &&
-        !breadcrumbs.find(
-          findBySlug(
-            Utils.getAttributeValue(breadcrumbs.first(), 'Parent Console Slug'),
-          ),
-        )
-      ) {
-        const parent = consoles.find(
-          findBySlug(
-            Utils.getAttributeValue(breadcrumbs.first(), 'Parent Console Slug'),
-          ),
-        );
-        if (parent) {
-          breadcrumbs = breadcrumbs.unshift(parent);
-        } else {
-          break;
-        }
+        currentCrumb =
+          parentSlug &&
+          parentSlug !== currentCrumb.slug &&
+          !breadcrumbs.find(findBySlug(parentSlug)) &&
+          consoles.find(findBySlug(parentSlug));
       }
       return (
         <div className="page-container page-container--console">
